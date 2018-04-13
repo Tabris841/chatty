@@ -11,14 +11,14 @@ import styleSheet from './Message.scss';
 const styles = theme => ({
   card: {
     flex: 1,
-    borderRadius: 6,
+    borderRadius: 6
   },
   myMessage: {
-    backgroundColor: '#dcf8c6',
-  },
+    backgroundColor: '#dcf8c6'
+  }
 });
 
-const Message = (props) => {
+const Message = props => {
   const { color, message, isCurrentUser, classes } = props;
   const cardClassName = () => {
     let names = [classes.card];
@@ -29,10 +29,14 @@ const Message = (props) => {
 
   return (
     <div className="message">
-      {isCurrentUser ? <div className="messages-spacer"/> : null}
+      {isCurrentUser ? <div className="messages-spacer" /> : null}
       <Card className={cardClassName()}>
         <CardHeader
-          avatar={<Avatar style={{ backgroundColor: color }}>{message.from.username.substring(0, 1)}</Avatar>}
+          avatar={
+            <Avatar style={{ backgroundColor: color }}>
+              {message.from.username.substring(0, 1)}
+            </Avatar>
+          }
           title={message.from.username}
           subheader={moment(message.createdAt).format('h:mm A')}
         />
@@ -40,11 +44,11 @@ const Message = (props) => {
           <Typography paragraph>{message.text}</Typography>
         </CardContent>
       </Card>
-      {!isCurrentUser ? <div className="messages-spacer"/> : null}
+      {!isCurrentUser ? <div className="messages-spacer" /> : null}
 
       <style jsx>{styleSheet}</style>
     </div>
-  )
+  );
 };
 
 Message.propTypes = {
@@ -52,11 +56,11 @@ Message.propTypes = {
   message: PropTypes.shape({
     createdAt: PropTypes.string.isRequired,
     from: PropTypes.shape({
-      username: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired
     }),
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
   }),
-  isCurrentUser: PropTypes.bool.isRequired,
+  isCurrentUser: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles)(Message);

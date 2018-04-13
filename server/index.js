@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
 import bodyParser from 'body-parser';
@@ -10,6 +11,8 @@ import { Mocks } from './data/mocks';
 
 const GRAPHQL_PORT = 3000;
 const app = express();
+
+app.use(cors());
 
 const executableSchema = makeExecutableSchema({
   typeDefs: Schema,

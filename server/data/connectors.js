@@ -54,7 +54,7 @@ db.sync({ force: true }).then(() =>
               username: faker.internet.userName(),
               password
             })
-            .then((user) => {
+            .then(user => {
               console.log(
                 '{email, username, password}',
                 `{${user.email}, ${user.username}, ${password}}`
@@ -64,13 +64,15 @@ db.sync({ force: true }).then(() =>
                   userId: user.id,
                   groupId: group.id,
                   text: faker.lorem.sentences(3)
-                }));
+                })
+              );
               return user;
             });
-        }))
-      .then((userPromises) => {
+        })
+      )
+      .then(userPromises => {
         // make users friends with all users in the group
-        Promise.all(userPromises).then((users) => {
+        Promise.all(userPromises).then(users => {
           _.each(users, (current, i) => {
             _.each(users, (user, j) => {
               if (i !== j) {
@@ -79,7 +81,9 @@ db.sync({ force: true }).then(() =>
             });
           });
         });
-      })));
+      })
+  )
+);
 
 const Group = db.models.group;
 const Message = db.models.message;

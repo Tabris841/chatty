@@ -4,7 +4,10 @@
   "author": "Anton Todorov",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --watch server --watch package.json server/index.js --exec babel-node"
+    "start":
+      "nodemon --watch server --watch package.json server/index.js --exec babel-node",
+    "debug":
+      "nodemon --watch server --watch package.json server/index.js --exec babel-node --nolazy --inspect-brk=9229"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -3,4 +3,10 @@
   flex: 1;
   background-color: #e5ddd5;
   flex-direction: column;
+  height: 100vh;
+
+  .messages {
+    height: 87.6vh;
+    overflow: auto;
+  }
 }

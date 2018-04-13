@@ -5,7 +5,8 @@ import Paper from 'material-ui/Paper';
 import styleSheet from './App.scss';
 
 import CenteredTabs from './components/Navigation/Navigation'
-import Groups from './components/Groups/Groups';
+import Groups from './containers/Groups/Groups';
+import Messages from "./containers/Messages/Messages";
 
 class App extends Component {
   render() {
@@ -13,12 +14,20 @@ class App extends Component {
       <Paper>
         <main>
           <Switch>
-            <Route path="/chats" component={Groups}/>
-            <Route path="/settings" render={() => <div>Settings</div>}/>
-            <Redirect to="/chats" />
+            <Route path="/messages" component={Messages} />
+            <Route path="/">
+              <div className="main-container">
+                <Switch>
+                  <Route path="/chats" component={Groups}/>
+                  <Route path="/settings" render={() => <div>Settings</div>}/>
+                  <Redirect to="/chats" />
+                </Switch>
+                <CenteredTabs />
+              </div>
+            </Route>
+            <Redirect to="/" />
           </Switch>
         </main>
-        <CenteredTabs />
 
         <style jsx>{styleSheet}</style>
       </Paper>

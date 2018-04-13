@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { withStyles } from 'material-ui/styles';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import BottomNavigation, {
+  BottomNavigationAction
+} from 'material-ui/BottomNavigation';
 
 const styles = theme => ({
   root: {
     borderTop: '1px solid rgba(0, 0, 0, 0.2)'
-  },
+  }
 });
 
 class Navigation extends Component {
@@ -26,16 +28,15 @@ class Navigation extends Component {
         onChange={this.handleChange}
         showLabels
       >
-        <BottomNavigationAction label="Chats" value={'/chats'}/>
-        <BottomNavigationAction label="Settings" value={'/settings'}/>
+        <BottomNavigationAction label="Chats" value={'/chats'} />
+        <BottomNavigationAction label="Settings" value={'/settings'} />
       </BottomNavigation>
-
     );
   }
 }
 
 Navigation.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
@@ -49,13 +50,15 @@ const mapStateToProps = state => {
 
       return pathname;
     }
-  }
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onTabClick: (path) => dispatch(push(path)),
-  }
+    onTabClick: path => dispatch(push(path))
+  };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Navigation));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(Navigation)
+);

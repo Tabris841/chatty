@@ -4,9 +4,10 @@ import Paper from 'material-ui/Paper';
 
 import styleSheet from './App.scss';
 
-import CenteredTabs from './components/Navigation/Navigation'
+import CenteredTabs from './components/Navigation/Navigation';
 import Groups from './containers/Groups/Groups';
-import Messages from "./containers/Messages/Messages";
+import Messages from './containers/Messages/Messages';
+import NewGroup from './containers/NewGroup/NewGroup';
 
 class App extends Component {
   render() {
@@ -15,11 +16,12 @@ class App extends Component {
         <main>
           <Switch>
             <Route path="/messages" component={Messages} />
+            <Route path="/new-group" component={NewGroup} />
             <Route path="/">
               <div className="main-container">
                 <Switch>
-                  <Route path="/chats" component={Groups}/>
-                  <Route path="/settings" render={() => <div>Settings</div>}/>
+                  <Route path="/chats" component={Groups} />
+                  <Route path="/settings" render={() => <div>Settings</div>} />
                   <Redirect to="/chats" />
                 </Switch>
                 <CenteredTabs />

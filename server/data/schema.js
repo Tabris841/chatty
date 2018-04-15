@@ -62,11 +62,11 @@ export const Schema = [
 
   type Mutation {
     # send a message to a group
-    createMessage(message: CreateMessageInput!): Message
-    createGroup(group: CreateGroupInput!): Group
+    createMessage(text: String!, userId: Int!, groupId: Int!): Message
+    createGroup(name: String!, userIds: [Int], userId: Int!): Group
     deleteGroup(id: Int!): Group
-    leaveGroup(id: Int!): Group # let user leave group
-    updateGroup(group: UpdateGroupInput!): Group
+    leaveGroup(id: Int!, userId: Int!): Group # let user leave group
+    updateGroup(id: Int!, name: String): Group
   }
 
   schema {

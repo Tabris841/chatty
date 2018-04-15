@@ -43,7 +43,7 @@ class Groups extends Component {
     return (
       <Auxiliary>
         <AppBar title="Chats" />
-        {loading && <LinearProgress />}
+        {loading && <LinearProgress />}ssssssssssssss
         <List className={classes.root}>{userChatGroups}</List>
 
         <style jsx>{styleSheet}</style>

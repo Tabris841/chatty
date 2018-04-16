@@ -24,7 +24,7 @@ const styles = {
 };
 
 const AppBar = props => {
-  const { classes } = props;
+  const { classes, goNext, goNextTitle, goBack, title } = props;
 
   return (
     <div className={classes.root}>
@@ -33,14 +33,14 @@ const AppBar = props => {
           <IconButton
             color="inherit"
             className={classes.goBackButton}
-            onClick={props.goBack}
+            onClick={goBack}
           >
             <KeyboardArrowLeft />
           </IconButton>
           <Typography variant="title" color="inherit" className={classes.flex}>
-            {props.title}
+            {title}
           </Typography>
-          <Button color="inherit">Placeholder</Button>
+          {(goNext && goNextTitle) && <Button color="inherit" onClick={goNext}>{goNextTitle}</Button>}
         </Toolbar>
       </MaterialAppBar>
     </div>
@@ -50,6 +50,8 @@ const AppBar = props => {
 AppBar.proptypes = {
   title: PropTypes.string.isRequired,
   goBack: PropTypes.func.isRequired,
+  goNext: PropTypes.func,
+  goNextTitle: PropTypes.string,
   classes: PropTypes.object.isRequired
 };
 

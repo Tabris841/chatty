@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

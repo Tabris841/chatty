@@ -42,8 +42,8 @@ class Groups extends Component {
 
     return (
       <Auxiliary>
-        <AppBar title="Chats" />
-        {loading && <LinearProgress />}ssssssssssssss
+        <AppBar title="Chats" goNext={this.props.goToNewGroup} goNextTitle={'New Group'}/>
+        {loading && <LinearProgress />}
         <List className={classes.root}>{userChatGroups}</List>
 
         <style jsx>{styleSheet}</style>
@@ -78,7 +78,8 @@ const userQuery = graphql(USER_QUERY, {
 const mapDispatchToProps = dispatch => {
   return {
     goToMessages: group =>
-      dispatch(push('/messages', { groupId: group.id, title: group.name }))
+      dispatch(push('/messages', { groupId: group.id, title: group.name })),
+    goToNewGroup: () => dispatch(push('/new-group'))
   };
 };
 

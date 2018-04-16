@@ -1,41 +1,42 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { groupBy, keys } from 'lodash';
+import { groupBy } from 'lodash';
 import { graphql, compose } from 'react-apollo';
 import update from 'immutability-helper';
 import { LinearProgress } from 'material-ui/Progress';
+import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
+import Checkbox from 'material-ui/Checkbox';
+import Avatar from 'material-ui/Avatar';
 
-import SelectedUserList from '../../components/SelectedUserList/SelectedUserListItem';
+import SelectedUserList from '../../components/SelectedUserList/SelectedUserList';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
-import USER_QUERY from '../graphql/user.query';
+import USER_QUERY from '../../graphql/user.query';
 import AppBar from '../../components/AppBar/AppBar';
 
-const sortObject = o =>
-  Object.keys(o)
-    .sort()
-    .reduce((r, k) => ((r[k] = o[k]), r), {});
+// eslint-disable-next-line
+const sortObject = o => Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
 
 class NewGroup extends Component {
   constructor(props) {
     super(props);
 
     let selected = [];
-    if (this.props.navigation.state.params) {
-      selected = this.props.navigation.state.params.selected;
-    }
+    // if (this.props.navigation.state.params) {
+    //   selected = this.props.navigation.state.params.selected;
+    // }
 
     this.state = {
       selected: selected || [],
       friends: props.user
         ? groupBy(props.user.friends, friend =>
-            friend.username.charAt(0).toUpperCase()
-          )
+          friend.username.charAt(0).toUpperCase()
+        )
         : []
     };
   }
 
   componentDidMount() {
-    this.refreshNavigation(this.state.selected);
+    // this.refreshNavigation(this.state.selected);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,9 +63,9 @@ class NewGroup extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!!this.state.selected.length !== !!nextState.selected.length) {
-      this.refreshNavigation(nextState.selected);
-    }
+    // if (!!this.state.selected.length !== !!nextState.selected.length) {
+    //   this.refreshNavigation(nextState.selected);
+    // }
   }
 
   refreshNavigation(selected) {
@@ -85,7 +86,7 @@ class NewGroup extends Component {
   };
 
   isSelected = user => {
-    return ~this.state.selected.indexOf(user);
+    return !!~this.state.selected.indexOf(user);
   };
 
   toggle = user => {
@@ -107,19 +108,45 @@ class NewGroup extends Component {
 
   render() {
     const { user, loading } = this.props;
+    console.log(this.props);
+
+    const friendsList = Object.keys(this.state.friends).map(key => (
+      <div key={key}>
+        <h1>{key}</h1>
+        {this.state.friends[key].map(friend => {
+          return (
+            <List key={friend.id}>
+              <ListItem dense button onClick={() => this.toggle(friend)}>
+                <Avatar style={{ backgroundColor: '#35D9FD' }}>
+                  {friend.username.substring(0, 1)}
+                </Avatar>
+                <ListItemText primary={friend.username}/>
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    onChange={() => this.toggle(friend)}
+                    checked={this.isSelected(friend)}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            </List>
+          )
+        })}
+      </div>
+    ));
 
     return (
       <Auxiliary>
-        <AppBar />
-        {(loading || !user) && <LinearProgress />}
+        <AppBar title="New Group"/>
+        {(loading || !user) && <LinearProgress/>}
         {this.state.selected.length ? (
-          <SelectedUserList data={this.state.selected} remove={this.toggle} />
+          <SelectedUserList data={this.state.selected} remove={this.toggle}/>
         ) : null}
-        {keys(this.state.friends).length ? <div>friends list</div> : null}
+        {friendsList}
       </Auxiliary>
     );
   }
 }
+
 
 NewGroup.propTypes = {
   loading: PropTypes.bool.isRequired,

@@ -3,8 +3,14 @@ import PropTypes from 'prop-types';
 import { groupBy } from 'lodash';
 import { graphql, compose } from 'react-apollo';
 import update from 'immutability-helper';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { LinearProgress } from 'material-ui/Progress';
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
+import List, {
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText
+} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import Avatar from 'material-ui/Avatar';
 
@@ -14,29 +20,23 @@ import USER_QUERY from '../../graphql/user.query';
 import AppBar from '../../components/AppBar/AppBar';
 
 // eslint-disable-next-line
-const sortObject = o => Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+const sortObject = o =>
+  Object.keys(o)
+    .sort()
+    .reduce((r, k) => ((r[k] = o[k]), r), {});
 
 class NewGroup extends Component {
   constructor(props) {
     super(props);
 
-    let selected = [];
-    // if (this.props.navigation.state.params) {
-    //   selected = this.props.navigation.state.params.selected;
-    // }
-
     this.state = {
-      selected: selected || [],
+      selected: [],
       friends: props.user
         ? groupBy(props.user.friends, friend =>
-          friend.username.charAt(0).toUpperCase()
-        )
+            friend.username.charAt(0).toUpperCase()
+          )
         : []
     };
-  }
-
-  componentDidMount() {
-    // this.refreshNavigation(this.state.selected);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,23 +62,8 @@ class NewGroup extends Component {
     this.setState(state);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // if (!!this.state.selected.length !== !!nextState.selected.length) {
-    //   this.refreshNavigation(nextState.selected);
-    // }
-  }
-
-  refreshNavigation(selected) {
-    const { navigation } = this.props;
-    navigation.setParams({
-      mode: selected && selected.length ? 'ready' : undefined,
-      finalizeGroup: this.finalizeGroup
-    });
-  }
-
-  finalizeGroup = () => {
-    const { navigate } = this.props.navigation;
-    navigate('FinalizeGroup', {
+  onGoNextClicked = () => {
+    this.props.finalizeGroup({
       selected: this.state.selected,
       friendCount: this.props.user.friends.length,
       userId: this.props.user.id
@@ -108,7 +93,18 @@ class NewGroup extends Component {
 
   render() {
     const { user, loading } = this.props;
-    console.log(this.props);
+
+    let appBar = <AppBar title="New Group" />;
+
+    if (this.state.selected.length > 0) {
+      appBar = (
+        <AppBar
+          title="New Group"
+          goNext={this.onGoNextClicked}
+          goNextTitle={'Next'}
+        />
+      );
+    }
 
     const friendsList = Object.keys(this.state.friends).map(key => (
       <div key={key}>
@@ -120,7 +116,7 @@ class NewGroup extends Component {
                 <Avatar style={{ backgroundColor: '#35D9FD' }}>
                   {friend.username.substring(0, 1)}
                 </Avatar>
-                <ListItemText primary={friend.username}/>
+                <ListItemText primary={friend.username} />
                 <ListItemSecondaryAction>
                   <Checkbox
                     onChange={() => this.toggle(friend)}
@@ -129,17 +125,17 @@ class NewGroup extends Component {
                 </ListItemSecondaryAction>
               </ListItem>
             </List>
-          )
+          );
         })}
       </div>
     ));
 
     return (
       <Auxiliary>
-        <AppBar title="New Group"/>
-        {(loading || !user) && <LinearProgress/>}
+        {appBar}
+        {(loading || !user) && <LinearProgress />}
         {this.state.selected.length ? (
-          <SelectedUserList data={this.state.selected} remove={this.toggle}/>
+          <SelectedUserList data={this.state.selected} remove={this.toggle} />
         ) : null}
         {friendsList}
       </Auxiliary>
@@ -147,16 +143,8 @@ class NewGroup extends Component {
   }
 }
 
-
 NewGroup.propTypes = {
   loading: PropTypes.bool.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-    setParams: PropTypes.func,
-    state: PropTypes.shape({
-      params: PropTypes.object
-    })
-  }),
   user: PropTypes.shape({
     id: PropTypes.number,
     friends: PropTypes.arrayOf(
@@ -177,4 +165,17 @@ const userQuery = graphql(USER_QUERY, {
   })
 });
 
-export default compose(userQuery)(NewGroup);
+const mapDispatchToProps = dispatch => {
+  return {
+    finalizeGroup: ({ selected, friendCount, userId }) =>
+      dispatch(
+        push('/finalize-group', {
+          selected,
+          friendCount,
+          userId
+        })
+      )
+  };
+};
+
+export default compose(userQuery, connect(null, mapDispatchToProps))(NewGroup);

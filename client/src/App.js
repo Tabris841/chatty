@@ -8,6 +8,8 @@ import CenteredTabs from './components/Navigation/Navigation';
 import Groups from './containers/Groups/Groups';
 import Messages from './containers/Messages/Messages';
 import NewGroup from './containers/NewGroup/NewGroup';
+import FinalizeGroup from './containers/FinalizeGroup/FinalizeGroup';
+import GroupDetails from "./containers/GroupDetails/GroupDetails";
 
 class App extends Component {
   render() {
@@ -17,6 +19,8 @@ class App extends Component {
           <Switch>
             <Route path="/messages" component={Messages} />
             <Route path="/new-group" component={NewGroup} />
+            <Route path="/finalize-group" component={FinalizeGroup} />
+            <Route path="/group-details" component={GroupDetails} />
             <Route path="/">
               <div className="main-container">
                 <Switch>

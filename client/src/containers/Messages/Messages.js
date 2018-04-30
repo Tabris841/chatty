@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
-import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import { LinearProgress } from 'material-ui/Progress';
 
@@ -87,7 +86,10 @@ class Messages extends Component {
 
     return (
       <div className="container">
-        <AppBar title={this.props.title} />
+        <AppBar
+          title={this.props.location.state.title}
+          groupId={this.props.location.state.groupId}
+        />
         {loading && <LinearProgress />}
         <div
           className="messages"
@@ -175,15 +177,4 @@ const createMessageMutation = graphql(CREATE_MESSAGE_MUTATION, {
   })
 });
 
-const mapStateToProps = state => {
-  return {
-    // TODO: improve getting the title
-    title: state.router.location.state ? state.router.location.state.title : ''
-  };
-};
-
-export default compose(
-  groupQuery,
-  createMessageMutation,
-  connect(mapStateToProps)
-)(Messages);
+export default compose(groupQuery, createMessageMutation)(Messages);

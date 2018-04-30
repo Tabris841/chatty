@@ -9,6 +9,7 @@
 
 # IDEs and editors
 */.idea
+/.idea
 
 yarn.lock
 chatty.sqlite

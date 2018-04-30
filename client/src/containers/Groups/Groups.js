@@ -34,7 +34,7 @@ class Groups extends Component {
               group={item}
               goToMessages={() => this.props.goToMessages(item)}
             />
-            <Divider />
+            <Divider/>
           </div>
         );
       });
@@ -43,7 +43,7 @@ class Groups extends Component {
     return (
       <Auxiliary>
         <AppBar title="Chats" goNext={this.props.goToNewGroup} goNextTitle={'New Group'}/>
-        {loading && <LinearProgress />}
+        {loading && <LinearProgress/>}
         <List className={classes.root}>{userChatGroups}</List>
 
         <style jsx>{styleSheet}</style>

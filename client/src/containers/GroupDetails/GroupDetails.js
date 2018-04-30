@@ -1,39 +1,36 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
+import Avatar from 'material-ui/Avatar';
 
-import GROUP_QUERY from '../graphql/group.query';
-import USER_QUERY from '../graphql/user.query';
-import DELETE_GROUP_MUTATION from '../graphql/delete-group.mutation';
-import LEAVE_GROUP_MUTATION from '../graphql/leave-group.mutation';
+import styleSheet from './GroupDetails.scss';
+
+import GROUP_QUERY from '../../graphql/group.query';
+import USER_QUERY from '../../graphql/user.query';
+import DELETE_GROUP_MUTATION from '../../graphql/delete-group.mutation';
+import LEAVE_GROUP_MUTATION from '../../graphql/leave-group.mutation';
+import AppBar from '../../components/AppBar/AppBar';
 
 class GroupDetails extends Component {
-  deleteGroup = () => {
-    this.props
-      .deleteGroup(this.props.navigation.state.params.id)
-      .then(() => {
-        this.props.navigation.dispatch(resetAction);
-      })
-      .catch(e => {
-        console.log(e); // eslint-disable-line no-console
-      });
-  };
+  render() {
+    const { group, loading } = this.props;
 
-  leaveGroup = () => {
-    this.props
-      .leaveGroup({
-        id: this.props.navigation.state.params.id,
-        userId: 1
-      }) // fake user for now
-      .then(() => {
-        this.props.navigation.dispatch(resetAction);
-      })
-      .catch(e => {
-        console.log(e); // eslint-disable-line no-console
-      });
-  };
+    return (
+      <div>
+        <AppBar title={'Group Info'} />
 
-  keyExtractor = item => item.id.toString();
+        <div className="group-subject-container">
+          <div className="group-icon-container">
+            <Avatar className="" src="https://reactjs.org/logo-og.png" />
+            <div>edit</div>
+          </div>
+          <div>{group.name}</div>
+        </div>
+
+        <style jsx>{styleSheet}</style>
+      </div>
+    );
+  }
 }
 
 GroupDetails.propTypes = {
@@ -63,7 +60,7 @@ GroupDetails.propTypes = {
 
 const groupQuery = graphql(GROUP_QUERY, {
   options: ownProps => ({
-    variables: { groupId: ownProps.navigation.state.params.id }
+    variables: { groupId: ownProps.location.state.id }
   }),
   props: ({ data: { loading, group } }) => ({
     loading,

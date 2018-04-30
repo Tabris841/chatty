@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Avatar from 'material-ui/Avatar';
 import CloseIcon from '@material-ui/icons/Close';
+import { withStyles } from "material-ui";
 
 import styleSheet from './SelectedUserListItem.scss';
-import { withStyles } from "material-ui/styles/index";
 
 const styles = {
   avatar: {

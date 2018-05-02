@@ -10,4 +10,5 @@ const CREATE_MESSAGE_MUTATION = gql`
   }
   ${MESSAGE_FRAGMENT}
 `;
+
 export default CREATE_MESSAGE_MUTATION;

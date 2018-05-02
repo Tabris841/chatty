@@ -10,6 +10,7 @@
     "apollo-link-error": "^1.0.9",
     "apollo-link-http": "^1.5.4",
     "apollo-link-redux": "^0.2.1",
+    "buffer": "^5.1.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.1",
     "history": "^4.7.2",

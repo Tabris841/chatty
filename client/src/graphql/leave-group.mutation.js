@@ -7,4 +7,5 @@ const LEAVE_GROUP_MUTATION = gql`
     }
   }
 `;
+
 export default LEAVE_GROUP_MUTATION;

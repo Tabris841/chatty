@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { graphql, compose } from 'react-apollo';
 import { withStyles } from 'material-ui/styles';
-import List from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import { LinearProgress } from 'material-ui/Progress';
+import { LinearProgress, List } from 'material-ui';
 
 import styleSheet from './Groups.scss';
 
@@ -34,7 +32,6 @@ class Groups extends Component {
               group={item}
               goToMessages={() => this.props.goToMessages(item)}
             />
-            <Divider/>
           </div>
         );
       });
@@ -61,10 +58,10 @@ Groups.propTypes = {
     groups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    )
-  })
+        name: PropTypes.string.isRequired,
+      }),
+    ),
+  }),
 };
 
 const userQuery = graphql(USER_QUERY, {

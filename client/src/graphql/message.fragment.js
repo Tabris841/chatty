@@ -14,4 +14,5 @@ const MESSAGE_FRAGMENT = gql`
     text
   }
 `;
+
 export default MESSAGE_FRAGMENT;

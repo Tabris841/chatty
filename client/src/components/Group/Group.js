@@ -13,7 +13,7 @@ const Group = props => {
 };
 
 Group.propTypes = {
-  goToMessages: PropTypes.func.isRequired,
+  goToMessages: PropTypes.func,
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string

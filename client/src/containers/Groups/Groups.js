@@ -15,11 +15,11 @@ import AppBar from '../../components/AppBar/AppBar';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import { USER_QUERY } from '../../graphql/user.query';
 
-const styles = theme => ({
+const styles = {
   root: {
     height: '85.5vh'
   }
-});
+};
 
 class Groups extends Component {
   render() {

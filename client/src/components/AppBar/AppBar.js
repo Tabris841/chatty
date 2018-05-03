@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { connect } from 'react-redux';
-import { goBack } from 'react-router-redux';
-import { push } from 'react-router-redux';
+import { goBack, push } from 'react-router-redux';
 import {
   Toolbar,
   Typography,

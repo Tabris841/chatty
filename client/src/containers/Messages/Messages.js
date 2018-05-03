@@ -11,12 +11,14 @@ import { find } from 'lodash';
 
 import styleSheet from './Messages.scss';
 
+import { wsClient } from '../../index';
 import Message from '../../components/Message/Message';
 import MessageInput from '../../components/MessageInput/MessageInput';
 import AppBar from '../../components/AppBar/AppBar';
 import GROUP_QUERY from '../../graphql/group.query';
 import CREATE_MESSAGE_MUTATION from '../../graphql/create-message.mutation';
 import USER_QUERY from '../../graphql/user.query';
+import MESSAGE_ADDED_SUBSCRIPTION from '../../graphql/message-added.subscription';
 
 class Messages extends Component {
   constructor(props) {
@@ -46,6 +48,45 @@ class Messages extends Component {
       this.setState({
         usernameColors
       });
+
+      // we don't resubscribe on changed props
+      // because it never happens in our app
+      if (!this.subscription) {
+        this.subscription = nextProps.subscribeToMore({
+          document: MESSAGE_ADDED_SUBSCRIPTION,
+          variables: {
+            userId: 1, // fake the user for now
+            groupIds: [nextProps.location.state.groupId]
+          },
+          updateQuery: (previousResult, { subscriptionData }) => {
+            const newMessage = subscriptionData.data.messageAdded;
+
+            return update(previousResult, {
+              group: {
+                messages: {
+                  edges: {
+                    $unshift: [
+                      {
+                        __typename: 'MessageEdge',
+                        node: newMessage,
+                        cursor: Buffer.from(newMessage.id.toString()).toString(
+                          'base64'
+                        )
+                      }
+                    ]
+                  }
+                }
+              }
+            });
+          }
+        });
+      }
+
+      if (!this.reconnected) {
+        this.reconnected = wsClient.onReconnected(() => {
+          this.props.refetch(); // check for any data lost during disconnect
+        }, this);
+      }
     }
   }
 
@@ -53,6 +94,20 @@ class Messages extends Component {
     if (prevProps.loading === true && !this.props.loading) {
       this.scrollToBottom();
     }
+
+    const firstMessageId = this.props.group.messages.edges[0].node.id;
+    const prevFirstMessageId = prevProps.group
+      ? prevProps.group.messages.edges[0].node.id
+      : null;
+
+    if (firstMessageId !== prevFirstMessageId) {
+      this.scrollToBottom();
+    }
+  }
+
+  componentDidMount() {
+    this.props.refetch();
+    this.scrollToBottom();
   }
 
   onEndReached = () => {
@@ -92,7 +147,7 @@ class Messages extends Component {
   };
 
   handleScroll = e => {
-    if (e.target.scrollTop <= 300) {
+    if (e.target.scrollTop <= 400) {
       this.onEndReached();
     }
   };
@@ -160,7 +215,9 @@ Messages.proptypes = {
     users: PropTypes.array
   }),
   loading: PropTypes.bool,
-  loadMoreEntries: PropTypes.func
+  loadMoreEntries: PropTypes.func,
+  refetch: PropTypes.func,
+  subscribeToMore: PropTypes.func
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -172,9 +229,13 @@ const groupQuery = graphql(GROUP_QUERY, {
       first: ITEMS_PER_PAGE
     }
   }),
-  props: ({ data: { fetchMore, loading, group } }) => ({
+  props: ({
+    data: { fetchMore, loading, group, refetch, subscribeToMore }
+  }) => ({
     loading,
     group,
+    refetch,
+    subscribeToMore,
     loadMoreEntries() {
       return fetchMore({
         // query: ... (you can specify a different query.

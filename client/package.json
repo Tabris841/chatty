@@ -5,19 +5,21 @@
   "dependencies": {
     "@material-ui/icons": "^1.0.0-beta.43",
     "apollo-cache-redux": "^0.1.0",
-    "apollo-client": "^2.2.8",
+    "apollo-client": "^2.3.0",
     "apollo-link": "^1.2.2",
     "apollo-link-error": "^1.0.9",
     "apollo-link-http": "^1.5.4",
     "apollo-link-redux": "^0.2.1",
+    "apollo-link-ws": "^1.0.8",
+    "apollo-utilities": "^1.0.12",
     "buffer": "^5.1.0",
     "graphql": "^0.13.2",
-    "graphql-tag": "^2.9.1",
+    "graphql-tag": "^2.9.2",
     "history": "^4.7.2",
-    "immutability-helper": "^2.6.6",
-    "lodash": "^4.17.5",
+    "immutability-helper": "^2.7.0",
+    "lodash": "^4.17.10",
     "material-ui": "^1.0.0-beta.43",
-    "moment": "^2.22.0",
+    "moment": "^2.22.1",
     "prop-types": "^15.6.1",
     "randomcolor": "^0.5.3",
     "react": "^16.3.2",
@@ -27,7 +29,8 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "redux": "^4.0.0",
-    "redux-devtools-extension": "^2.13.2"
+    "redux-devtools-extension": "^2.13.2",
+    "subscriptions-transport-ws": "^0.9.8"
   },
   "devDependencies": {
     "autoprefixer": "7.1.6",
@@ -80,12 +83,8 @@
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,mjs}"
-    ],
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
-    ],
+    "collectCoverageFrom": ["src/**/*.{js,jsx,mjs}"],
+    "setupFiles": ["<rootDir>/config/polyfills.js"],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",
       "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}"
@@ -95,11 +94,10 @@
     "transform": {
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^(?!.*\\.(js|jsx|mjs|css|json)$)":
+        "<rootDir>/config/jest/fileTransform.js"
     },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
-    ],
+    "transformIgnorePatterns": ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
     },
@@ -114,16 +112,12 @@
     ]
   },
   "babel": {
-    "presets": [
-      "react-app"
-    ],
+    "presets": ["react-app"],
     "plugins": [
       [
         "styled-jsx/babel",
         {
-          "plugins": [
-            "styled-jsx-plugin-sass"
-          ]
+          "plugins": ["styled-jsx-plugin-sass"]
         }
       ]
     ]
@@ -131,9 +125,7 @@
   "eslintConfig": {
     "extends": "react-app",
     "settings": {
-      "import/core-modules": [
-        "styled-jsx/css"
-      ]
+      "import/core-modules": ["styled-jsx/css"]
     }
   }
 }

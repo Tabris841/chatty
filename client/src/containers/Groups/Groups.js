@@ -40,7 +40,7 @@ class Groups extends Component {
     return (
       <Auxiliary>
         <AppBar title="Chats" goNext={this.props.goToNewGroup} goNextTitle={'New Group'}/>
-        {loading && <LinearProgress/>}
+        {(loading || !user) && <LinearProgress/>}
         <List className={classes.root}>{userChatGroups}</List>
 
         <style jsx>{styleSheet}</style>

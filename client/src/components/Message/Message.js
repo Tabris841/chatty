@@ -2,9 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
-import Typography from 'material-ui/Typography';
+import { Card, CardHeader, CardContent, Avatar, Typography } from 'material-ui';
 
 import styleSheet from './Message.scss';
 

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
+import { Paper, TextField, Grid, Button } from 'material-ui';
 import SendIcon from '@material-ui/icons/Send';
 
 class MessageInput extends Component {

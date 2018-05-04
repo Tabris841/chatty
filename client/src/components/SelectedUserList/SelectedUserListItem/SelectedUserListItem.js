@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Avatar from 'material-ui/Avatar';
+import { Avatar } from 'material-ui';
 import CloseIcon from '@material-ui/icons/Close';
-import { withStyles } from "material-ui";
+import { withStyles } from 'material-ui';
 
 import styleSheet from './SelectedUserListItem.scss';
 
@@ -24,19 +24,17 @@ const styles = {
   }
 };
 
-const SelectedUserListItem = props => {
-  return (
-    <div className="container" onClick={() => props.remove(props.user)}>
-      <Avatar className={props.classes.avatar}>
-        {props.user.username.substring(0, 1)}
-        <CloseIcon className={props.classes.closeIcon}/>
-      </Avatar>
-      <p>{props.user.username}</p>
+const SelectedUserListItem = props => (
+  <div className="container" onClick={() => props.remove(props.user)}>
+    <Avatar className={props.classes.avatar}>
+      {props.user.username.substring(0, 1)}
+      <CloseIcon className={props.classes.closeIcon} />
+    </Avatar>
+    <p>{props.user.username}</p>
 
-      <style jsx>{styleSheet}</style>
-    </div>
-  );
-};
+    <style jsx>{styleSheet}</style>
+  </div>
+);
 
 SelectedUserListItem.prototype = {
   user: PropTypes.shape({
@@ -44,7 +42,7 @@ SelectedUserListItem.prototype = {
     username: PropTypes.string
   }),
   remove: PropTypes.func,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(SelectedUserListItem);

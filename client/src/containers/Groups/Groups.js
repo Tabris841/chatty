@@ -15,7 +15,7 @@ import { USER_QUERY } from '../../graphql/user.query';
 
 const styles = {
   root: {
-    height: '85.5vh'
+    height: '80vh;'
   }
 };
 
@@ -39,8 +39,12 @@ class Groups extends Component {
 
     return (
       <Auxiliary>
-        <AppBar title="Chats" goNext={this.props.goToNewGroup} goNextTitle={'New Group'}/>
-        {(loading || !user) && <LinearProgress/>}
+        <AppBar
+          title="Chats"
+          goNext={this.props.goToNewGroup}
+          goNextTitle={'New Group'}
+        />
+        {(loading || !user) && <LinearProgress />}
         <List className={classes.root}>{userChatGroups}</List>
 
         <style jsx>{styleSheet}</style>
@@ -52,24 +56,32 @@ class Groups extends Component {
 Groups.propTypes = {
   goToMessages: PropTypes.func,
   loading: PropTypes.bool,
+  refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     email: PropTypes.string.isRequired,
     groups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-      }),
-    ),
-  }),
+        name: PropTypes.string.isRequired
+      })
+    )
+  })
 };
 
 const userQuery = graphql(USER_QUERY, {
-  options: () => ({ variables: { id: 1 } }), // fake the user for now
-  props: ({ data: { loading, user } }) => ({
+  skip: ownProps => !ownProps.auth || !ownProps.auth.jwt,
+  options: ownProps => ({ variables: { id: ownProps.auth.id } }),
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
     loading,
+    networkStatus,
+    refetch,
     user
   })
+});
+
+const mapStateToProps = ({ auth }) => ({
+  auth
 });
 
 const mapDispatchToProps = dispatch => {
@@ -80,6 +92,6 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default compose(userQuery, connect(null, mapDispatchToProps))(
+export default compose(connect(mapStateToProps, mapDispatchToProps), userQuery)(
   withStyles(styles)(Groups)
 );

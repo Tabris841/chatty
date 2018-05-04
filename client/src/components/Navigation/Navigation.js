@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { withStyles } from 'material-ui/styles';
-import BottomNavigation, {
-  BottomNavigationAction
-} from 'material-ui/BottomNavigation';
+import { BottomNavigation, BottomNavigationAction } from 'material-ui';
 
 const styles = theme => ({
   root: {
@@ -53,11 +51,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onTabClick: path => dispatch(push(path))
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  onTabClick: path => dispatch(push(path))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withStyles(styles)(Navigation)

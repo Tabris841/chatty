@@ -5,21 +5,21 @@ import { graphql, compose } from 'react-apollo';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { LinearProgress } from 'material-ui/Progress';
-import List, {
+import {
+  LinearProgress,
+  List,
   ListItem,
   ListItemSecondaryAction,
-  ListItemText
-} from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
-import Avatar from 'material-ui/Avatar';
+  ListItemText,
+  Checkbox,
+  Avatar
+} from 'material-ui';
 
 import SelectedUserList from '../../components/SelectedUserList/SelectedUserList';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import USER_QUERY from '../../graphql/user.query';
 import AppBar from '../../components/AppBar/AppBar';
 
-// eslint-disable-next-line
 const sortObject = o =>
   Object.keys(o)
     .sort()
@@ -158,11 +158,15 @@ NewGroup.propTypes = {
 };
 
 const userQuery = graphql(USER_QUERY, {
-  options: ownProps => ({ variables: { id: 1 } }), // fake for now
+  options: ownProps => ({ variables: { id: ownProps.auth.id } }),
   props: ({ data: { loading, user } }) => ({
     loading,
     user
   })
+});
+
+const mapStateToProps = ({ auth }) => ({
+  auth
 });
 
 const mapDispatchToProps = dispatch => {
@@ -178,4 +182,6 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default compose(userQuery, connect(null, mapDispatchToProps))(NewGroup);
+export default compose(connect(mapStateToProps, mapDispatchToProps), userQuery)(
+  NewGroup
+);

@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ListItem, ListItemText } from 'material-ui/List';
-import { Avatar } from 'material-ui';
+import { Avatar, ListItem, ListItemText } from 'material-ui';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import moment from 'moment/moment';
+import { withStyles } from 'material-ui/styles/index';
 
 import styleSheet from './Group.scss';
+
+const styles = theme => ({
+  avatar: {
+    width: 60,
+    height: 60
+  }
+});
 
 // format createdAt with moment
 const formatCreatedAt = createdAt =>
@@ -24,13 +31,18 @@ const Group = props => {
 
   return (
     <ListItem key={id} button onClick={props.goToMessages} divider={true}>
-      <Avatar src="https://reactjs.org/logo-og.png" />
+      <Avatar
+        className={props.classes.avatar}
+        src="https://reactjs.org/logo-og.png"
+      />
       <ListItemText>
         <div className="group-name">{name}</div>
         <div className="group-username">
           {edgesLength ? `${messages.edges[0].node.from.username}:` : ''}
         </div>
-        <div className="group-text">{edgesLength ? messages.edges[0].node.text : ''}</div>
+        <div className="group-text">
+          {edgesLength ? messages.edges[0].node.text : ''}
+        </div>
       </ListItemText>
       <div>
         <div className="group-last-update">
@@ -45,6 +57,7 @@ const Group = props => {
 };
 
 Group.propTypes = {
+  classes: PropTypes.object.isRequired,
   goToMessages: PropTypes.func.isRequired,
   group: PropTypes.shape({
     id: PropTypes.number,
@@ -60,4 +73,4 @@ Group.propTypes = {
   })
 };
 
-export default Group;
+export default withStyles(styles)(Group);

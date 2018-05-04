@@ -159,8 +159,8 @@ const deleteGroupMutation = graphql(DELETE_GROUP_MUTATION, {
           // Read the data from our cache for this query.
           const data = store.readQuery({
             query: USER_QUERY,
-            variables: { id: 1 }
-          }); // fake for now
+            variables: { id: ownProps.auth.id }
+          });
 
           // Add our message from the mutation to the end.
           data.user.groups = data.user.groups.filter(
@@ -170,7 +170,7 @@ const deleteGroupMutation = graphql(DELETE_GROUP_MUTATION, {
           // Write our data back to the cache.
           store.writeQuery({
             query: USER_QUERY,
-            variables: { id: 1 }, // fake for now
+            variables: { id: ownProps.auth.id },
             data
           });
         }
@@ -180,15 +180,15 @@ const deleteGroupMutation = graphql(DELETE_GROUP_MUTATION, {
 
 const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
   props: ({ ownProps, mutate }) => ({
-    leaveGroup: ({ id, userId }) =>
+    leaveGroup: ({ id }) =>
       mutate({
-        variables: { id, userId },
+        variables: { id },
         update: (store, { data: { leaveGroup } }) => {
           // Read the data from our cache for this query.
           const data = store.readQuery({
             query: USER_QUERY,
-            variables: { id: 1 }
-          }); // fake for now
+            variables: { id: ownProps.auth.id }
+          });
 
           // Add our message from the mutation to the end.
           data.user.groups = data.user.groups.filter(
@@ -198,7 +198,7 @@ const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
           // Write our data back to the cache.
           store.writeQuery({
             query: USER_QUERY,
-            variables: { id: 1 }, // fake for now
+            variables: { id: ownProps.auth.id },
             data
           });
         }
@@ -206,15 +206,17 @@ const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
   })
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    goToGroups: () => dispatch(push('/chats'))
-  };
-};
+const mapStateToProps = ({ auth }) => ({
+  auth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  goToGroups: () => dispatch(push('/chats'))
+});
 
 export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
   groupQuery,
   deleteGroupMutation,
   leaveGroupMutation,
-  connect(null, mapDispatchToProps)
 )(withStyles(styles)(GroupDetails));

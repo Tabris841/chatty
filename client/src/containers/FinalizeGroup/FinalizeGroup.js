@@ -5,11 +5,7 @@ import { map } from 'lodash';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
-import Avatar from 'material-ui/Avatar';
-import Snackbar from 'material-ui/Snackbar';
+import { Snackbar, Avatar, TextField, Typography, Toolbar } from 'material-ui';
 import { withStyles } from 'material-ui';
 
 import styleSheet from './FinalizeGroup.scss';
@@ -24,7 +20,11 @@ const styles = {
   toolbar: {
     backgroundColor: '#dbdbdb',
     color: '#777'
-  }
+  },
+  avatar: {
+    width: 50,
+    height: 50
+  },
 };
 
 class FinalizeGroup extends Component {
@@ -32,7 +32,7 @@ class FinalizeGroup extends Component {
     selected: this.props.location.state.selected,
     name: null,
     message: '',
-    open: false,
+    open: false
   };
 
   remove = user => {
@@ -75,12 +75,12 @@ class FinalizeGroup extends Component {
       return;
     }
 
-    this.setState({ snackbarIsOpen: false });
+    this.setState({ open: false });
   };
 
   render() {
     const { classes } = this.props;
-    const { open, message, selected, name} = this.state;
+    const { open, message, selected, name } = this.state;
 
     let appBar = <AppBar title="New Group" />;
 
@@ -100,8 +100,8 @@ class FinalizeGroup extends Component {
 
         <div className="group-subject-container">
           <div className="group-icon-container">
-            <Avatar className="" src="https://reactjs.org/logo-og.png" />
-            <div>edit</div>
+            <Avatar className={classes.avatar} src="https://reactjs.org/logo-og.png" />
+            <div style={{paddingTop: '6px'}}>edit</div>
           </div>
           <TextField
             id="group-subject"
@@ -114,7 +114,9 @@ class FinalizeGroup extends Component {
 
         <Toolbar className={classes.toolbar}>
           <Typography variant="title" color="inherit">
-            {`participants: ${selected.length} of ${this.props.location.state.friendCount}`.toUpperCase()}
+            {`participants: ${selected.length} of ${
+              this.props.location.state.friendCount
+            }`.toUpperCase()}
           </Typography>
         </Toolbar>
 
@@ -122,11 +124,7 @@ class FinalizeGroup extends Component {
           <SelectedUserList data={selected} remove={this.remove} />
         ) : null}
 
-        <Snackbar
-          message={message}
-          open={open}
-          onClose={this.handleClose}
-        />
+        <Snackbar message={message} open={open} onClose={this.handleClose} />
 
         <style jsx>{styleSheet}</style>
       </Auxiliary>
@@ -181,14 +179,12 @@ const userQuery = graphql(USER_QUERY, {
   })
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    goToGroups: () => dispatch(push('/chats'))
-  }
-};
+const mapDispatchToProps = dispatch => ({
+  goToGroups: () => dispatch(push('/chats'))
+});
 
 export default compose(
+  connect(null, mapDispatchToProps),
   userQuery,
-  createGroupMutation,
-  connect(null, mapDispatchToProps)
+  createGroupMutation
 )(withStyles(styles)(FinalizeGroup));

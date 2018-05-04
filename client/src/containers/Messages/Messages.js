@@ -8,6 +8,7 @@ import update from 'immutability-helper';
 import { Buffer } from 'buffer';
 import moment from 'moment';
 import { find } from 'lodash';
+import { connect } from 'react-redux';
 
 import styleSheet from './Messages.scss';
 
@@ -55,7 +56,6 @@ class Messages extends Component {
         this.subscription = nextProps.subscribeToMore({
           document: MESSAGE_ADDED_SUBSCRIPTION,
           variables: {
-            userId: 1, // fake the user for now
             groupIds: [nextProps.location.state.groupId]
           },
           updateQuery: (previousResult, { subscriptionData }) => {
@@ -95,13 +95,20 @@ class Messages extends Component {
       this.scrollToBottom();
     }
 
-    const firstMessageId = this.props.group.messages.edges[0].node.id;
-    const prevFirstMessageId = prevProps.group
-      ? prevProps.group.messages.edges[0].node.id
-      : null;
+    if (
+      prevProps.group &&
+      prevProps.group.messages.edges.length > 0 &&
+      this.props.group &&
+      this.props.group.messages.edges.length > 0
+    ) {
+      const firstMessageId = this.props.group.messages.edges[0].node.id;
+      const prevFirstMessageId = prevProps.group
+        ? prevProps.group.messages.edges[0].node.id
+        : null;
 
-    if (firstMessageId !== prevFirstMessageId) {
-      this.scrollToBottom();
+      if (firstMessageId !== prevFirstMessageId) {
+        this.scrollToBottom();
+      }
     }
   }
 
@@ -130,7 +137,6 @@ class Messages extends Component {
     this.props
       .createMessage({
         groupId: this.props.location.state.groupId,
-        userId: 1, // faking the user for now
         text
       })
       .then(() => {
@@ -165,7 +171,7 @@ class Messages extends Component {
             <Message
               key={message.id}
               color={this.state.usernameColors[message.from.username]}
-              isCurrentUser={message.from.id === 1} // for now until we implement auth
+              isCurrentUser={message.from.id === this.props.auth.id}
               message={message}
             />
           );
@@ -265,10 +271,10 @@ const groupQuery = graphql(GROUP_QUERY, {
 });
 
 const createMessageMutation = graphql(CREATE_MESSAGE_MUTATION, {
-  props: ({ mutate }) => ({
-    createMessage: ({ text, userId, groupId }) =>
+  props: ({ ownProps, mutate }) => ({
+    createMessage: ({ text, groupId }) =>
       mutate({
-        variables: { text, userId, groupId },
+        variables: { text, groupId },
         optimisticResponse: {
           __typename: 'Mutation',
           createMessage: {
@@ -278,8 +284,8 @@ const createMessageMutation = graphql(CREATE_MESSAGE_MUTATION, {
             createdAt: new Date().toISOString(), // the time is now!
             from: {
               __typename: 'User',
-              id: 1, // still faking the user
-              username: 'Justyn.Kautzer' // still faking the user
+              id: ownProps.auth.id,
+              username: ownProps.auth.username
             },
             to: {
               __typename: 'Group',
@@ -317,7 +323,7 @@ const createMessageMutation = graphql(CREATE_MESSAGE_MUTATION, {
           const userData = store.readQuery({
             query: USER_QUERY,
             variables: {
-              id: 1 // faking the user for now
+              id: ownProps.auth.id
             }
           });
 
@@ -342,7 +348,7 @@ const createMessageMutation = graphql(CREATE_MESSAGE_MUTATION, {
             store.writeQuery({
               query: USER_QUERY,
               variables: {
-                id: 1 // faking the user for now
+                id: ownProps.auth.id
               },
               data: userData
             });
@@ -352,4 +358,12 @@ const createMessageMutation = graphql(CREATE_MESSAGE_MUTATION, {
   })
 });
 
-export default compose(groupQuery, createMessageMutation)(Messages);
+const mapStateToProps = ({ auth }) => ({
+  auth
+});
+
+export default compose(
+  connect(mapStateToProps),
+  groupQuery,
+  createMessageMutation
+)(Messages);

@@ -29,6 +29,7 @@ const styles = {
 
 const AppBar = props => {
   const {
+    showGoBack,
     classes,
     goNext,
     goNextTitle,
@@ -42,13 +43,15 @@ const AppBar = props => {
     <div className={classes.root}>
       <MaterialAppBar position="static" color="default">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            className={classes.goBackButton}
-            onClick={goBack}
-          >
-            <KeyboardArrowLeft />
-          </IconButton>
+          {showGoBack && (
+            <IconButton
+              color="inherit"
+              className={classes.goBackButton}
+              onClick={goBack}
+            >
+              <KeyboardArrowLeft />
+            </IconButton>
+          )}
           <Typography variant="title" color="inherit" className={classes.flex}>
             {groupId ? (
               <span
@@ -78,6 +81,7 @@ const AppBar = props => {
 AppBar.proptypes = {
   title: PropTypes.string.isRequired,
   groupId: PropTypes.number,
+  showGoBack: PropTypes.bool.isRequired,
   goBack: PropTypes.func.isRequired,
   goNext: PropTypes.func,
   titleLinkHandler: PropTypes.func,
@@ -85,11 +89,13 @@ AppBar.proptypes = {
   classes: PropTypes.object.isRequired
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    goBack: () => dispatch(goBack()),
-    titleLinkHandler: id => dispatch(push('/group-details', { id }))
-  };
+AppBar.defaultProps = {
+  showGoBack: true
 };
+
+const mapDispatchToProps = dispatch => ({
+  goBack: () => dispatch(goBack()),
+  titleLinkHandler: id => dispatch(push('/group-details', { id }))
+});
 
 export default connect(null, mapDispatchToProps)(withStyles(styles)(AppBar));

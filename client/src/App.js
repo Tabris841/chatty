@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
 import update from 'immutability-helper';
 import { map } from 'lodash';
 import { Buffer } from 'buffer';
-import Paper from 'material-ui/Paper';
+import { connect } from 'react-redux';
+import { Paper } from 'material-ui';
 
 import styleSheet from './App.scss';
 
@@ -15,6 +16,8 @@ import Messages from './containers/Messages/Messages';
 import NewGroup from './containers/NewGroup/NewGroup';
 import FinalizeGroup from './containers/FinalizeGroup/FinalizeGroup';
 import GroupDetails from './containers/GroupDetails/GroupDetails';
+import SignIn from './containers/SignIn/SignIn';
+import Settings from "./containers/Settings/Settings";
 
 import { USER_QUERY } from './graphql/user.query';
 import MESSAGE_ADDED_SUBSCRIPTION from './graphql/message-added.subscription';
@@ -45,6 +48,7 @@ class App extends Component {
 
     if (
       nextProps.user &&
+      nextProps.user.id === nextProps.auth.id &&
       (!this.props.user ||
         nextProps.user.groups.length !== this.props.user.groups.length)
     ) {
@@ -65,27 +69,38 @@ class App extends Component {
   }
 
   render() {
+    let routes = (
+      <Switch>
+        <Route path="/sign-in" component={SignIn} />
+        <Redirect to="/sign-in" />
+      </Switch>
+    );
+
+    if (this.props.auth && this.props.auth.jwt) {
+      routes = (
+        <Switch>
+          <Route path="/messages" component={Messages} />
+          <Route path="/new-group" component={NewGroup} />
+          <Route path="/finalize-group" component={FinalizeGroup} />
+          <Route path="/group-details" component={GroupDetails} />
+          <Route path="/">
+            <div className="main-container">
+              <Switch>
+                <Route path="/chats" component={Groups} />
+                <Route path="/settings" component={Settings} />
+                <Redirect to="/chats" />
+              </Switch>
+              <CenteredTabs />
+            </div>
+          </Route>
+          <Redirect to="/" />
+        </Switch>
+      );
+    }
+
     return (
       <Paper>
-        <main>
-          <Switch>
-            <Route path="/messages" component={Messages} />
-            <Route path="/new-group" component={NewGroup} />
-            <Route path="/finalize-group" component={FinalizeGroup} />
-            <Route path="/group-details" component={GroupDetails} />
-            <Route path="/">
-              <div className="main-container">
-                <Switch>
-                  <Route path="/chats" component={Groups} />
-                  <Route path="/settings" render={() => <div>Settings</div>} />
-                  <Redirect to="/chats" />
-                </Switch>
-                <CenteredTabs />
-              </div>
-            </Route>
-            <Redirect to="/" />
-          </Switch>
-        </main>
+        <main>{routes}</main>
 
         <style jsx>{styleSheet}</style>
       </Paper>
@@ -94,6 +109,10 @@ class App extends Component {
 }
 
 App.propTypes = {
+  auth: PropTypes.shape({
+    id: PropTypes.number,
+    jwt: PropTypes.string
+  }),
   refetch: PropTypes.func,
   subscribeToGroups: PropTypes.func,
   subscribeToMessages: PropTypes.func,
@@ -110,7 +129,8 @@ App.propTypes = {
 };
 
 const userQuery = graphql(USER_QUERY, {
-  options: () => ({ variables: { id: 1 } }), // fake the user for now
+  skip: ownProps => !ownProps.auth || !ownProps.auth.jwt,
+  options: ownProps => ({ variables: { id: ownProps.auth.id } }),
   props: ({ data: { loading, user, refetch, subscribeToMore } }) => ({
     loading,
     user,
@@ -119,7 +139,6 @@ const userQuery = graphql(USER_QUERY, {
       return subscribeToMore({
         document: MESSAGE_ADDED_SUBSCRIPTION,
         variables: {
-          userId: 1, // fake the user for now
           groupIds: map(user.groups, 'id')
         },
         updateQuery: (previousResult, { subscriptionData }) => {
@@ -149,7 +168,7 @@ const userQuery = graphql(USER_QUERY, {
                   }
                 }
               }
-            },
+            }
           });
         }
       });
@@ -172,4 +191,8 @@ const userQuery = graphql(USER_QUERY, {
   })
 });
 
-export default compose(userQuery)(App);
+const mapStateToProps = ({ auth }) => ({
+  auth
+});
+
+export default withRouter(compose(connect(mapStateToProps), userQuery)(App));

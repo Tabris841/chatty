@@ -17,7 +17,7 @@ import NewGroup from './containers/NewGroup/NewGroup';
 import FinalizeGroup from './containers/FinalizeGroup/FinalizeGroup';
 import GroupDetails from './containers/GroupDetails/GroupDetails';
 import SignIn from './containers/SignIn/SignIn';
-import Settings from "./containers/Settings/Settings";
+import Settings from './containers/Settings/Settings';
 
 import { USER_QUERY } from './graphql/user.query';
 import MESSAGE_ADDED_SUBSCRIPTION from './graphql/message-added.subscription';

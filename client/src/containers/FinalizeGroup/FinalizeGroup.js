@@ -24,7 +24,7 @@ const styles = {
   avatar: {
     width: 50,
     height: 50
-  },
+  }
 };
 
 class FinalizeGroup extends Component {
@@ -56,7 +56,6 @@ class FinalizeGroup extends Component {
 
     createGroup({
       name: this.state.name,
-      userId: 1, // fake user for now
       userIds: map(this.state.selected, 'id')
     })
       .then(res => {
@@ -100,8 +99,11 @@ class FinalizeGroup extends Component {
 
         <div className="group-subject-container">
           <div className="group-icon-container">
-            <Avatar className={classes.avatar} src="https://reactjs.org/logo-og.png" />
-            <div style={{paddingTop: '6px'}}>edit</div>
+            <Avatar
+              className={classes.avatar}
+              src="https://reactjs.org/logo-og.png"
+            />
+            <div style={{ paddingTop: '6px' }}>edit</div>
           </div>
           <TextField
             id="group-subject"
@@ -140,15 +142,15 @@ FinalizeGroup.propTypes = {
 };
 
 const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
-  props: ({ mutate }) => ({
-    createGroup: ({ name, userIds, userId }) =>
+  props: ({ ownProps, mutate }) => ({
+    createGroup: group =>
       mutate({
-        variables: { name, userIds, userId },
+        variables: { group },
         update: (store, { data: { createGroup } }) => {
           // Read the data from our cache for this query.
           const data = store.readQuery({
             query: USER_QUERY,
-            variables: { id: userId }
+            variables: { id: ownProps.auth.id }
           });
 
           // Add our message from the mutation to the end.
@@ -157,7 +159,7 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
           // Write our data back to the cache.
           store.writeQuery({
             query: USER_QUERY,
-            variables: { id: userId },
+            variables: { id: ownProps.auth.id },
             data
           });
         }
@@ -179,12 +181,16 @@ const userQuery = graphql(USER_QUERY, {
   })
 });
 
+const mapStateToProps = ({ auth }) => ({
+  auth,
+});
+
 const mapDispatchToProps = dispatch => ({
   goToGroups: () => dispatch(push('/chats'))
 });
 
 export default compose(
-  connect(null, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   userQuery,
   createGroupMutation
 )(withStyles(styles)(FinalizeGroup));
